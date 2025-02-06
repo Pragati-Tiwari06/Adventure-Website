@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar"> 
+        <h1 class="logo">ADVENTURE</h1>
+        <ul class="nav-links">
+            <li><a href="#"> Home</a> </li>
+            <li><a href="#" id="login-button">Login</a></li>
+            <li><a href="#check">About</a> </li>
+            <li><a href="#e1">Explore</a> </li>
+            
+            <li><a href="#t1">Tours</a> </li>
+            
+        </ul>
+    </nav>
+
+    <div class="login-form-container" id="login-form">
+        <form action="submit-form.php" method="post">
+            <h2>Login</h2>
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <header>
+        <div class="header-content">
+            <h2>Explore the colourful World</h2>
+            <div class="line"></div>
+            <h1>A WONDERFUL GIFT</h1>
+            <p>Join us in exploring the most breathtaking destinations and thrilling activities around the globe.
+            Our mission is to inspire and guide adventure enthusiasts to discover new experiences, embrace challenges, and create unforgettable memories.</p>
+            <a href="#" class="ctn">Start Your Journey</a>
+        </div>
+    </header>
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuBtn.addEventListener('click', () => {
+            console.log('Menu button was clicked!');
+            navLinks.classList.toggle('mobile-menu');
+        });
+    </script>
+    <section class="events" id="check">
+        <div class="title">
+            <h1>Upcoming Events</h1>
+            <div class="line"></div>
+            <div class="row">
+                <div class="col">
+                    <img src="./imagess/img1.png" alt="">
+                    <h4>Everest Camp Trek</h4>
+                    <p class="pp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam ratione est exercitationem libero modi nemo dicta itaque inventore aperiam ducimus.</p>
+                    <a href="#" class="ctn">Learn More</a>
+                </div>
+                <div class="col">
+                    <img src="./imagess/img2.png" alt="">
+                    <h4>Walking Holidays</h4>
+                    <p class="pp">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam ratione est exercitationem libero modi nemo dicta itaque inventore aperiam ducimus.</p>
+                    <a href="#" class="ctn">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="explore" id="e1">
+        <div class="explore-content">
+            <h1>EXPLORE THE WORLD</h1>
+            <div class="line"></div>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem unde eligendi delectus repudiandae. Inventore, quos explicabo sequi tempore perspiciatis, atque recusandae nisi veniam, adipisci aliquid omnis numquam reprehenderit voluptatibus vitae!</p>
+            <a href="#" class="ctn">Learn More</a>
+        </div>
+    </section>
+
+    <section class="tours" id="t1">
+        <div class="row">
+            <div class="col content-col">
+                <h1>UPCOMING TOURS AND DESTINATION</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos, natus. Veritatis ea molestiae quaerat, voluptatibus nulla velit, excepturi earum maxime, iste obcaecati .</p>
+                <a href="#" class="ctn">Learn More</a>
+            </div>
+            <div class="col image-col">
+                <div class="image-gallery">
+                    <img src="./imagess/img3.png" alt="">
+                    <img src="./imagess/img4.png" alt="">
+                    <img src="./imagess/img5.png" alt="">
+                    <img src="./imagess/img6.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="weather">
+        <h2>Current Weather</h2>
+        <div id="weather-info"></div>
+    </section>
+
+    <section class="footer">
+        <p>123 Fifth Avenue,  New Delhi, INDIA | Phone: 800-123-456 | Email: contact@examp.com</p>
+        <p>© 2020 Outdoor Adventure</p>
+    </section>
+
+    <script>
+        document.getElementById('login-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('login-form').classList.toggle('show');
+        });
+
+        // API integration for weather information
+        const apiKey = '3c958972d75412363b3d3fd7408ecb0b';
+        const cities = ['Delhi', 'Manali', 'Kathmandu,']; // Add more cities as needed
+        const weatherContainer = document.getElementById('weather-info');
+
+        function fetchWeather(city) {
+            const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            return fetch(url)
+                .then(response => response.json())
+                .then(data => ({
+                    name: data.name,
+                    temp: data.main.temp,
+                    description: data.weather[0].description
+                }))
+                .catch(error => {
+                    console.error(`Error fetching weather data for ${city}:`, error);
+                    return {
+                        name: city,
+                        error: 'Failed to load weather data.'
+                    };
+                });
+        }
+
+        function displayWeather() {
+            const weatherPromises = cities.map(city => fetchWeather(city));
+
+            Promise.all(weatherPromises)
+                .then(weatherData => {
+                    const weatherHtml = weatherData.map(data => {
+                        if (data.error) {
+                            return `<div class="city-weather"><h3>${data.name}</h3><p>${data.error}</p></div>`;
+                        }
+                        return `
+                            <div class="city-weather">
+                                <h3>${data.name}</h3>
+                                <p>Temperature: ${data.temp}°C</p>
+                                <p>Weather: ${data.description}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    weatherContainer.innerHTML = weatherHtml;
+                });
+        }
+
+        displayWeather();
+    </script>
+   
+</body>
+</html>
